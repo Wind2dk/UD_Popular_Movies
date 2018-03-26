@@ -30,6 +30,10 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
+    public static Movie getMovie() {
+        return new Movie(4, 1337, 6, "Tomb Raider", "https://image.tmdb.org/t/p/original/ePyN2nX9t8SOl70eRW47Q29zUFO.jpg", null, "Lara Croft, the fiercely independent daughter of a missing adventurer, must push herself beyond her limits when she finds herself on the island where her father disappeared.", new Date(132423231));
+    }
+
     public int getVoteCount() {
         return voteCount;
     }
