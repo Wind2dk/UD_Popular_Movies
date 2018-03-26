@@ -23,6 +23,7 @@ import java.lang.invoke.WrongMethodTypeException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Scanner;
 
 import dk.getonboard.android.popularmovies.R;
@@ -34,16 +35,21 @@ import dk.getonboard.android.popularmovies.model.Movie;
 
 public class TheMovieDbApi {
 
+    private TheMovieDbApiListener listener;
     private Context context;
     private static final String TAG = "TheMovieDbApi";
     private final static String API_URL = "http://api.themoviedb.org/3";
     private final static String STANDARD_POSTER_SIZE = "w185";
     private final String API_KEY;
 
-    public TheMovieDbApi(Context context) {
+    public TheMovieDbApi(Context context, TheMovieDbApiListener listener) {
         this.context = context;
+        this.listener = listener;
         API_KEY = context.getResources().getString(R.string.movie_db_api_key);
 
+    }
+
+    public void getMovies(List<Movie> movies) {
         // https://developer.android.com/training/volley/simple.html#java
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this.context);
@@ -57,10 +63,7 @@ public class TheMovieDbApi {
                         // Display the first 500 characters of the response string.
                         Log.d(TAG, "Response is: "+ response.substring(0,500));
                         try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONArray results = jsonObject.getJSONArray("results");
-                            Movie movie = MovieJsonParser.ParseMovie(results.get(0).toString());
-                            Log.d(TAG, "movie id: " + movie.toString());
+                            listener.onMovieResponse(MovieJsonParser.ParseMovies(response));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -74,7 +77,6 @@ public class TheMovieDbApi {
 
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-
     }
 
 }

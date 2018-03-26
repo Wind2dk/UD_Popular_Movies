@@ -4,6 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dk.getonboard.android.popularmovies.model.Movie;
 
 /**
@@ -11,18 +14,26 @@ import dk.getonboard.android.popularmovies.model.Movie;
  */
 
 public class MovieJsonParser {
-    public static Movie ParseMovie(String json) {
-        Movie movie = new Movie();
-        try {
-            JSONObject jsonMovie = new JSONObject(json);
-            movie.setId(jsonMovie.getInt("id"));
-            movie.setTitle(jsonMovie.getString("title"));
-            movie.setOverview(jsonMovie.getString("overview"));
-            movie.setPosterPath(jsonMovie.getString("poster_path"));
-            movie.setGenreIds(intArrayFromJson(jsonMovie.getJSONArray("genre_ids")));
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+    public static List<Movie> ParseMovies(String json) throws JSONException {
+        JSONObject jsonObject = new JSONObject(json);
+        JSONArray results = jsonObject.getJSONArray("results");
+        List<Movie> movies = new ArrayList<>(results.length());
+        for (int i = 0; i < results.length(); i++) {
+            movies.add(ParseMovie(results.get(i).toString()));
         }
+        return movies;
+    }
+
+    public static Movie ParseMovie(String json) throws JSONException {
+        Movie movie = new Movie();
+        JSONObject jsonMovie = new JSONObject(json);
+        movie.setId(jsonMovie.getInt("id"));
+        movie.setTitle(jsonMovie.getString("title"));
+        movie.setOverview(jsonMovie.getString("overview"));
+        movie.setPosterPath(jsonMovie.getString("poster_path"));
+        movie.setGenreIds(intArrayFromJson(jsonMovie.getJSONArray("genre_ids")));
+
         return movie;
     }
 

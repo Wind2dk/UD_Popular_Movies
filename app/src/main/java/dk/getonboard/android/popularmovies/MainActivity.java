@@ -12,13 +12,16 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dk.getonboard.android.popularmovies.adapter.GridAdapter;
+import dk.getonboard.android.popularmovies.model.Movie;
 import dk.getonboard.android.popularmovies.utility.TheMovieDbApi;
+import dk.getonboard.android.popularmovies.utility.TheMovieDbApiListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TheMovieDbApiListener {
 
     @BindView(R.id.main_gridview) GridView gridview;
 
@@ -28,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-        TheMovieDbApi api = new TheMovieDbApi(this);
+        TheMovieDbApi api = new TheMovieDbApi(this, this);
 
         /*Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -50,4 +53,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onMovieResponse(List<Movie> movies) {
+
+    }
 }
