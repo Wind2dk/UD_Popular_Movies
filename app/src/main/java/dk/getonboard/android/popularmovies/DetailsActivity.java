@@ -1,5 +1,6 @@
 package dk.getonboard.android.popularmovies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,7 +31,8 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
-        movie = Movie.getMovie();
+        Intent intent = getIntent();
+        movie = intent.getParcelableExtra("movie");
         updateViews();
     }
 
@@ -47,8 +49,9 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             });
             builder.build().load(movie.getPosterPath()).into(movieImage);*/
+            String path = "http://image.tmdb.org/t/p/" + "w185" + movie.getPosterPath();
             Picasso.get()
-                    .load(movie.getPosterPath())
+                    .load(path)
                     .placeholder(R.mipmap.ic_launcher)
                     .into(movieImage);
             title.setText(movie.getTitle());

@@ -49,7 +49,7 @@ public class TheMovieDbApi {
 
     }
 
-    public void getMovies(List<Movie> movies) {
+    public void getMovies() {
         // https://developer.android.com/training/volley/simple.html#java
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this.context);

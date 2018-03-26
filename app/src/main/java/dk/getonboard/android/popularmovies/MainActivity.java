@@ -24,6 +24,7 @@ import dk.getonboard.android.popularmovies.utility.TheMovieDbApiListener;
 public class MainActivity extends AppCompatActivity implements TheMovieDbApiListener {
 
     @BindView(R.id.main_gridview) GridView gridview;
+    GridAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements TheMovieDbApiList
 
         ButterKnife.bind(this);
         TheMovieDbApi api = new TheMovieDbApi(this, this);
+        api.getMovies();
 
         /*Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -42,19 +44,22 @@ public class MainActivity extends AppCompatActivity implements TheMovieDbApiList
             }
         });*/
 
-        gridview.setAdapter(new GridAdapter(this));
+
+    }
+
+    @Override
+    public void onMovieResponse(final List<Movie> movies) {
+
+        adapter = new GridAdapter(this, movies);
+        gridview.setAdapter(adapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
-                Toast.makeText(MainActivity.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                intent.putExtra("movie", movies.get(position));
+                startActivityForResult(intent, 1);
             }
         });
-    }
-
-    @Override
-    public void onMovieResponse(List<Movie> movies) {
-
     }
 }
