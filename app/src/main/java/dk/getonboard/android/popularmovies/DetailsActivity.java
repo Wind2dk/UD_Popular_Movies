@@ -15,11 +15,13 @@ import dk.getonboard.android.popularmovies.model.Movie;
 
 public class DetailsActivity extends AppCompatActivity {
 
+    //region BindViews
     @BindView(R.id.details_movieImage) ImageView movieImage;
     @BindView(R.id.details_tv_title) TextView title;
     @BindView(R.id.details_tv_overview) TextView overview;
     @BindView(R.id.details_tv_userRating) TextView userRating;
     @BindView(R.id.details_tv_releaseDate) TextView releaseDate;
+    //endregion
 
     Movie movie;
 

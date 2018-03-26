@@ -1,5 +1,6 @@
 package dk.getonboard.android.popularmovies.utility;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import dk.getonboard.android.popularmovies.R;
 import dk.getonboard.android.popularmovies.model.Movie;
 
 /**
@@ -18,11 +20,13 @@ import dk.getonboard.android.popularmovies.model.Movie;
  */
 
 public class TheMovieDbApi {
+
+    private Context context;
     private final static String API_URL = "http://api.themoviedb.org/3";
     private final static String STANDARD_POSTER_SIZE = "w185";
-    private final static String API_KEY = "c56209799a8f31b427c3063b6a9cd29f";
+    private final String API_KEY = context.getResources().getString(R.string.movie_db_api_key);
 
-    public static Movie[] getMovies(String filter) {
+    public Movie[] getMovies(String filter) {
         switch (filter) {
             case "popular": getMovies(filter, true);
                 break;
@@ -31,7 +35,7 @@ public class TheMovieDbApi {
         return null;
     }
 
-    private static Movie[] getMovies(String filter, Boolean controlledArgument) {
+    private Movie[] getMovies(String filter, Boolean controlledArgument) {
         URL url = buildUrl(filter);
         try {
             String response = getResponseFromHttpUrl(url);
@@ -43,7 +47,7 @@ public class TheMovieDbApi {
         return null;
     }
 
-    public static URL buildUrl(String searchFilter) {
+    private URL buildUrl(String searchFilter) {
         Uri builtUri = Uri.parse(API_URL).buildUpon()
                 .appendPath(STANDARD_POSTER_SIZE)
                 .appendPath(searchFilter)
