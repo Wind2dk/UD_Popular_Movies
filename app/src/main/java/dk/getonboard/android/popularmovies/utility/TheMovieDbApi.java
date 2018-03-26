@@ -1,8 +1,21 @@
 package dk.getonboard.android.popularmovies.utility;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,65 +35,46 @@ import dk.getonboard.android.popularmovies.model.Movie;
 public class TheMovieDbApi {
 
     private Context context;
+    private static final String TAG = "TheMovieDbApi";
     private final static String API_URL = "http://api.themoviedb.org/3";
     private final static String STANDARD_POSTER_SIZE = "w185";
-    private final String API_KEY = context.getResources().getString(R.string.movie_db_api_key);
+    private final String API_KEY;
 
-    public Movie[] getMovies(String filter) {
-        switch (filter) {
-            case "popular": getMovies(filter, true);
-                break;
-            default: throw new IllegalArgumentException("");
-        }
-        return null;
-    }
+    public TheMovieDbApi(Context context) {
+        this.context = context;
+        API_KEY = context.getResources().getString(R.string.movie_db_api_key);
 
-    private Movie[] getMovies(String filter, Boolean controlledArgument) {
-        URL url = buildUrl(filter);
-        try {
-            String response = getResponseFromHttpUrl(url);
-            Log.d("TAG", response);
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+        // https://developer.android.com/training/volley/simple.html#java
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this.context);
+        String url = "http://api.themoviedb.org/3/movie/popular?api_key=" + API_KEY;
 
-    private URL buildUrl(String searchFilter) {
-        Uri builtUri = Uri.parse(API_URL).buildUpon()
-                .appendPath(STANDARD_POSTER_SIZE)
-                .appendPath(searchFilter)
-                .appendQueryParameter("api_key", API_KEY)
-                .build();
-
-        Log.d("TAG", builtUri.toString());
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        return url;
-    }
-
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
-
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        Log.d(TAG, "Response is: "+ response.substring(0,500));
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray results = jsonObject.getJSONArray("results");
+                            Movie movie = MovieJsonParser.ParseMovie(results.get(0).toString());
+                            Log.d(TAG, "movie id: " + movie.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "That didn't work!" + error);
             }
-        } finally {
-            urlConnection.disconnect();
-        }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
     }
+
 }
