@@ -1,6 +1,5 @@
 package dk.getonboard.android.popularmovies.utility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import dk.getonboard.android.popularmovies.model.Movie;

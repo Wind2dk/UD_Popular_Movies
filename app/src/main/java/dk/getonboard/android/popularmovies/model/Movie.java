@@ -3,8 +3,6 @@ package dk.getonboard.android.popularmovies.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
-
 /**
  * Created by Wind2dk on 01-03-2018.
  */
@@ -17,12 +15,12 @@ public class Movie implements Parcelable {
     private String posterPath;
     private int[] genreIds;
     private String overview;
-    private Date releaseDate;
+    private String releaseDate;
 
     public Movie() {
     }
 
-    public Movie(int voteCount, int id, double voteAverage, String title, String posterPath, int[] genreIds, String overview, Date releaseDate) {
+    public Movie(int voteCount, int id, double voteAverage, String title, String posterPath, int[] genreIds, String overview, String releaseDate) {
         this.voteCount = voteCount;
         this.id = id;
         this.voteAverage = voteAverage;
@@ -41,6 +39,7 @@ public class Movie implements Parcelable {
         posterPath = in.readString();
         genreIds = in.createIntArray();
         overview = in.readString();
+        releaseDate = in.readString();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -54,10 +53,6 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
-
-    public static Movie getMovie() {
-        return new Movie(4, 1337, 6, "Tomb Raider", "https://image.tmdb.org/t/p/original/ePyN2nX9t8SOl70eRW47Q29zUFO.jpg", null, "Lara Croft, the fiercely independent daughter of a missing adventurer, must push herself beyond her limits when she finds herself on the island where her father disappeared.", new Date(132423231));
-    }
 
     public int getVoteCount() {
         return voteCount;
@@ -115,11 +110,11 @@ public class Movie implements Parcelable {
         this.overview = overview;
     }
 
-    public Date getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -137,5 +132,6 @@ public class Movie implements Parcelable {
         dest.writeString(posterPath);
         dest.writeIntArray(genreIds);
         dest.writeString(overview);
+        dest.writeString(releaseDate);
     }
 }

@@ -1,12 +1,10 @@
 package dk.getonboard.android.popularmovies.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +14,7 @@ import java.util.List;
 
 import dk.getonboard.android.popularmovies.R;
 import dk.getonboard.android.popularmovies.model.Movie;
+import dk.getonboard.android.popularmovies.utility.TheMovieDbApi;
 
 /**
  * Created by Wind on 26-03-2018.
@@ -23,8 +22,8 @@ import dk.getonboard.android.popularmovies.model.Movie;
 
 public class GridAdapter extends BaseAdapter {
     private final static String TAG = "GridAdapter";
-    private Context mContext;
-    private List<Movie> mMovies;
+    private final Context mContext;
+    private final List<Movie> mMovies;
 
     public GridAdapter(Context c, List<Movie> movies) {
         mContext = c;
@@ -53,13 +52,12 @@ public class GridAdapter extends BaseAdapter {
         }
 
         final ImageView imageView = convertView.findViewById(R.id.grid_movieImage);
-        final TextView title = convertView.findViewById(R.id.grid_tv_title);
+        final TextView releaseDate = convertView.findViewById(R.id.grid_tv_releaseDate);
         final TextView userRating = convertView.findViewById(R.id.grid_tv_userRating);
 
-        //title.setText(movie.getTitle());
+        releaseDate.setText(movie.getReleaseDate());
         userRating.setText(String.valueOf(movie.getVoteAverage()));
-        String path = "http://image.tmdb.org/t/p/" + "w185" + movie.getPosterPath();
-        Picasso.get().load(path).into(imageView);
+        Picasso.get().load(TheMovieDbApi.getPoster(movie.getPosterPath())).into(imageView);
 
         return convertView;
     }

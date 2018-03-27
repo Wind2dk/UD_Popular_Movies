@@ -1,9 +1,6 @@
 package dk.getonboard.android.popularmovies.utility;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.net.Uri;
-import android.nfc.Tag;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -13,21 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.WrongMethodTypeException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-import java.util.Scanner;
-
 import dk.getonboard.android.popularmovies.R;
-import dk.getonboard.android.popularmovies.model.Movie;
 
 /**
  * Created by Wind2dk on 01-03-2018.
@@ -35,11 +18,17 @@ import dk.getonboard.android.popularmovies.model.Movie;
 
 public class TheMovieDbApi {
 
-    private TheMovieDbApiListener listener;
-    private Context context;
+    private final TheMovieDbApiListener listener;
+    private final Context context;
     private static final String TAG = "TheMovieDbApi";
-    private final static String API_URL = "http://api.themoviedb.org/3";
-    private final static String STANDARD_POSTER_SIZE = "w185";
+    private final static String API_BASE_URL = "http://api.themoviedb.org/3";
+    private final static String API_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
+    private final static String POSTER_SIZE_VERY_SMALL = "w92";
+    private final static String POSTER_SIZE_SMALL = "w154";
+    private final static String POSTER_SIZE_MEDIUM = "w185";
+    private final static String POSTER_SIZE_LARGE = "w342";
+    private final static String POSTER_SIZE_VERY_LARGE = "w500";
+    private final static String POSTER_SIZE_HUGE = "w780";
     private final String API_KEY;
 
     public TheMovieDbApi(Context context, TheMovieDbApiListener listener) {
@@ -62,11 +51,7 @@ public class TheMovieDbApi {
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
                         Log.d(TAG, "Response is: "+ response.substring(0,500));
-                        try {
-                            listener.onMovieResponse(MovieJsonParser.ParseMovies(response));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        listener.onMovieResponse(MovieJsonParser.ParseMovies(response));
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -79,4 +64,19 @@ public class TheMovieDbApi {
         queue.add(stringRequest);
     }
 
+    public static String getPoster(String path) {
+        return getPoster(path, 2);
+    }
+
+    public static String getPoster(String path, int size) {
+        switch (size) {
+            case 0: return API_POSTER_BASE_URL + POSTER_SIZE_VERY_SMALL + path;
+            case 1: return API_POSTER_BASE_URL + POSTER_SIZE_SMALL + path;
+            case 2: return API_POSTER_BASE_URL + POSTER_SIZE_MEDIUM + path;
+            case 3: return API_POSTER_BASE_URL + POSTER_SIZE_LARGE + path;
+            case 4: return API_POSTER_BASE_URL + POSTER_SIZE_VERY_LARGE + path;
+            case 5: return API_POSTER_BASE_URL + POSTER_SIZE_HUGE + path;
+            default: return getPoster(path);
+        }
+    }
 }
