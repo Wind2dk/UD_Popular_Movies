@@ -3,6 +3,8 @@ package dk.getonboard.android.popularmovies;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -20,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements TheMovieDbApiList
 
     private static final int SHOW_DETAILS_REQUEST_CODE = 100;
 
-    @BindView(R.id.main_gridview) private GridView gridview;
+    @BindView(R.id.main_gridview) GridView gridview;
 
     private GridAdapter mAdapter;
     private TheMovieDbApi mTheMovieDbApi;
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements TheMovieDbApiList
 
         ButterKnife.bind(this);
         mTheMovieDbApi = new TheMovieDbApi(this, this);
-        mTheMovieDbApi.getMovies();
+        mTheMovieDbApi.getMovies("popular");
     }
 
     @Override
@@ -49,5 +51,25 @@ public class MainActivity extends AppCompatActivity implements TheMovieDbApiList
                 startActivityForResult(intent, SHOW_DETAILS_REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.popular:
+                mTheMovieDbApi.getMovies("popular");
+                return true;
+            case R.id.top_rated:
+                mTheMovieDbApi.getMovies("top_rated");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

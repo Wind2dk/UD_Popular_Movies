@@ -38,11 +38,11 @@ public class TheMovieDbApi {
 
     }
 
-    public void getMovies() {
+    public void getMovies(String filter) {
         // https://developer.android.com/training/volley/simple.html#java
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this.context);
-        String url = "http://api.themoviedb.org/3/movie/popular?api_key=" + API_KEY;
+        String url = API_BASE_URL + "/movie/" + filter + "?api_key=" + API_KEY;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,

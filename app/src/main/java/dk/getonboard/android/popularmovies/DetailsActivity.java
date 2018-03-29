@@ -16,11 +16,11 @@ import dk.getonboard.android.popularmovies.utility.TheMovieDbApi;
 public class DetailsActivity extends AppCompatActivity {
 
     //region BindViews
-    @BindView(R.id.details_movieImage) private ImageView movieImage;
-    @BindView(R.id.details_tv_title) private TextView title;
-    @BindView(R.id.details_tv_overview) private TextView overview;
-    @BindView(R.id.details_tv_userRating) private TextView userRating;
-    @BindView(R.id.details_tv_releaseDate) private TextView releaseDate;
+    @BindView(R.id.details_movieImage) ImageView movieImage;
+    @BindView(R.id.details_tv_title) TextView title;
+    @BindView(R.id.details_tv_overview) TextView overview;
+    @BindView(R.id.details_tv_userRating) TextView userRating;
+    @BindView(R.id.details_tv_releaseDate) TextView releaseDate;
     //endregion
 
     Movie movie;
@@ -38,7 +38,7 @@ public class DetailsActivity extends AppCompatActivity {
     private void updateViews() {
         if (movie != null) {
             Picasso.get()
-                    .load(TheMovieDbApi.getPoster(movie.getPosterPath(), 3))
+                    .load(TheMovieDbApi.getPoster(movie.getPosterPath()))
                     .placeholder(R.mipmap.ic_launcher)
                     .into(movieImage);
             title.setText(movie.getTitle());
