@@ -10,6 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import dk.getonboard.android.popularmovies.BuildConfig;
 import dk.getonboard.android.popularmovies.R;
 
 /**
@@ -29,12 +30,11 @@ public class TheMovieDbApi {
     private final static String POSTER_SIZE_LARGE = "w342";
     private final static String POSTER_SIZE_VERY_LARGE = "w500";
     private final static String POSTER_SIZE_HUGE = "w780";
-    private final String API_KEY;
+    private final String API_KEY = BuildConfig.API_KEY;
 
     public TheMovieDbApi(Context context, TheMovieDbApiListener listener) {
         this.context = context;
         this.listener = listener;
-        API_KEY = context.getResources().getString(R.string.movie_db_api_key);
 
     }
 
