@@ -13,6 +13,16 @@ import com.android.volley.toolbox.Volley;
 import dk.getonboard.android.popularmovies.BuildConfig;
 import dk.getonboard.android.popularmovies.R;
 
+import static dk.getonboard.android.popularmovies.BuildConfig.API_KEY;
+import static dk.getonboard.android.popularmovies.utility.TheMovieDbApiKeys.API_BASE_URL;
+import static dk.getonboard.android.popularmovies.utility.TheMovieDbApiKeys.API_POSTER_BASE_URL;
+import static dk.getonboard.android.popularmovies.utility.TheMovieDbApiKeys.POSTER_SIZE_HUGE;
+import static dk.getonboard.android.popularmovies.utility.TheMovieDbApiKeys.POSTER_SIZE_LARGE;
+import static dk.getonboard.android.popularmovies.utility.TheMovieDbApiKeys.POSTER_SIZE_MEDIUM;
+import static dk.getonboard.android.popularmovies.utility.TheMovieDbApiKeys.POSTER_SIZE_SMALL;
+import static dk.getonboard.android.popularmovies.utility.TheMovieDbApiKeys.POSTER_SIZE_VERY_LARGE;
+import static dk.getonboard.android.popularmovies.utility.TheMovieDbApiKeys.POSTER_SIZE_VERY_SMALL;
+
 /**
  * Created by Wind2dk on 01-03-2018.
  */
@@ -22,26 +32,18 @@ public class TheMovieDbApi {
     private final TheMovieDbApiListener listener;
     private final Context context;
     private static final String TAG = "TheMovieDbApi";
-    private final static String API_BASE_URL = "http://api.themoviedb.org/3";
-    private final static String API_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-    private final static String POSTER_SIZE_VERY_SMALL = "w92";
-    private final static String POSTER_SIZE_SMALL = "w154";
-    private final static String POSTER_SIZE_MEDIUM = "w185";
-    private final static String POSTER_SIZE_LARGE = "w342";
-    private final static String POSTER_SIZE_VERY_LARGE = "w500";
-    private final static String POSTER_SIZE_HUGE = "w780";
-    private final String API_KEY = BuildConfig.API_KEY;
+    private final RequestQueue requestQueue;
 
     public TheMovieDbApi(Context context, TheMovieDbApiListener listener) {
         this.context = context;
         this.listener = listener;
-
+        requestQueue = Volley.newRequestQueue(this.context);
     }
 
     public void getMovies(String filter) {
         // https://developer.android.com/training/volley/simple.html#java
         // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this.context);
+
         String url = API_BASE_URL + "/movie/" + filter + "?api_key=" + API_KEY;
 
         // Request a string response from the provided URL.
@@ -61,7 +63,7 @@ public class TheMovieDbApi {
         });
 
         // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        requestQueue.add(stringRequest);
     }
 
     public static String getPoster(String path) {
@@ -79,4 +81,7 @@ public class TheMovieDbApi {
             default: return getPoster(path);
         }
     }
+
+
 }
+

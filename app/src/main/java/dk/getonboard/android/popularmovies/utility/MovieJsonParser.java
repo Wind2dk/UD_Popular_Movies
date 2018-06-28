@@ -1,5 +1,7 @@
 package dk.getonboard.android.popularmovies.utility;
 
+import com.android.volley.toolbox.JsonObjectRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dk.getonboard.android.popularmovies.model.Movie;
+import dk.getonboard.android.popularmovies.model.Trailer;
 
 /**
  * Created by Wind on 26-03-2018.
@@ -23,6 +26,10 @@ class MovieJsonParser {
     private static final String MOVIE_VOTE_AVERAGE_KEY = "vote_average";
     private static final String MOVIE_VOTE_COUNT_KEY = "vote_count";
     private static final String MOVIE_RELEASE_DATE_KEY = "release_date";
+
+    private static final String TRAILER_RESULTS_KEY = "results";
+    private static final String TRAILER_NAME_KEY = "name";
+    private static final String TRAILER_KEY_KEY = "key";
 
     static List<Movie> ParseMovies(String json) {
         JSONObject jsonObject;
@@ -52,6 +59,24 @@ class MovieJsonParser {
         movie.setVoteCount(jsonMovie.getInt(MOVIE_VOTE_COUNT_KEY));
         movie.setReleaseDate(jsonMovie.getString(MOVIE_RELEASE_DATE_KEY));
         return movie;
+    }
+
+    static List<Trailer> ParseTrailers(String json) {
+        List<Trailer> trailerList = new ArrayList<>();
+        try {
+            JSONObject jsonTrailers = new JSONObject(json);
+            JSONArray jsonTrailerArray = jsonTrailers.getJSONArray(TRAILER_RESULTS_KEY);
+            for (int i = 0; i < jsonTrailerArray.length(); i++) {
+                JSONObject jsonTrailer = jsonTrailerArray.getJSONObject(i);
+                Trailer trailer = new Trailer();
+                trailer.setName(jsonTrailer.getString(TRAILER_NAME_KEY));
+                trailer.setKey(jsonTrailer.getString(TRAILER_KEY_KEY));
+                trailerList.add(trailer);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return trailerList;
     }
 
     //https://stackoverflow.com/questions/20068852/how-to-cast-jsonarray-to-int-array
