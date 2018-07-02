@@ -1,7 +1,5 @@
 package dk.getonboard.android.popularmovies.utility;
 
-import com.android.volley.toolbox.JsonObjectRequest;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dk.getonboard.android.popularmovies.model.Movie;
+import dk.getonboard.android.popularmovies.model.Review;
 import dk.getonboard.android.popularmovies.model.Trailer;
 
 /**
@@ -27,9 +26,13 @@ class MovieJsonParser {
     private static final String MOVIE_VOTE_COUNT_KEY = "vote_count";
     private static final String MOVIE_RELEASE_DATE_KEY = "release_date";
 
-    private static final String TRAILER_RESULTS_KEY = "results";
+    private static final String RESULTS_KEY = "results";
     private static final String TRAILER_NAME_KEY = "name";
     private static final String TRAILER_KEY_KEY = "key";
+    private static final String REVIEW_AUTHOR_KEY = "author";
+    private static final String REVIEW_CONTENT_KEY = "content";
+    private static final String REVIEW_ID_KEY = "id";
+    private static final String REVIEW_URL_KEY = "url";
 
     static List<Movie> ParseMovies(String json) {
         JSONObject jsonObject;
@@ -65,7 +68,7 @@ class MovieJsonParser {
         List<Trailer> trailerList = new ArrayList<>();
         try {
             JSONObject jsonTrailers = new JSONObject(json);
-            JSONArray jsonTrailerArray = jsonTrailers.getJSONArray(TRAILER_RESULTS_KEY);
+            JSONArray jsonTrailerArray = jsonTrailers.getJSONArray(RESULTS_KEY);
             for (int i = 0; i < jsonTrailerArray.length(); i++) {
                 JSONObject jsonTrailer = jsonTrailerArray.getJSONObject(i);
                 Trailer trailer = new Trailer();
@@ -77,6 +80,26 @@ class MovieJsonParser {
             e.printStackTrace();
         }
         return trailerList;
+    }
+
+    static List<Review> ParseReviews(String json) {
+        List<Review> reviewList = new ArrayList<>();
+        try {
+            JSONObject jsonReviews = new JSONObject(json);
+            JSONArray jsonReviewArray = jsonReviews.getJSONArray(RESULTS_KEY);
+            for (int i = 0; i < jsonReviewArray.length(); i++) {
+                JSONObject jsonReview = jsonReviewArray.getJSONObject(i);
+                Review review = new Review();
+                review.setAuthor(jsonReview.getString(REVIEW_AUTHOR_KEY));
+                review.setContent(jsonReview.getString(REVIEW_CONTENT_KEY));
+                review.setId(jsonReview.getString(REVIEW_ID_KEY));
+                review.setUrl(jsonReview.getString(REVIEW_URL_KEY));
+                reviewList.add(review);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return reviewList;
     }
 
     //https://stackoverflow.com/questions/20068852/how-to-cast-jsonarray-to-int-array
@@ -94,4 +117,6 @@ class MovieJsonParser {
 
         return numbers;
     }
+
+
 }

@@ -46,4 +46,27 @@ public class DetailsContentApi {
         // Add the request to the RequestQueue.
         requestQueue.add(stringRequest);
     }
+
+    public void getReviews(int movieId) {
+        String url = API_BASE_URL + "/movie/" + movieId + "/reviews?api_key=" + API_KEY;
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        Log.d(TAG, "Response is: "+ response.substring(0,500));
+                        listener.onReviewResponse(MovieJsonParser.ParseReviews(response));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "That didn't work!" + error);
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        requestQueue.add(stringRequest);
+    }
 }
