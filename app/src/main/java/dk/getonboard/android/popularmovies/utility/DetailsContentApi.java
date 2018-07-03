@@ -32,8 +32,6 @@ public class DetailsContentApi {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Log.d(TAG, "Response is: "+ response.substring(0,200));
                         listener.onTrailerResponse(MovieJsonParser.ParseTrailers(response));
                     }
                 }, new Response.ErrorListener() {
@@ -55,8 +53,6 @@ public class DetailsContentApi {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Log.d(TAG, "Response is: "+ response.substring(0,200));
                         listener.onReviewResponse(MovieJsonParser.ParseReviews(response));
                     }
                 }, new Response.ErrorListener() {

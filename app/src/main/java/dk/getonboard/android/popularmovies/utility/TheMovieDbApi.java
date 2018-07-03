@@ -48,8 +48,6 @@ public class TheMovieDbApi {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Log.d(TAG, "Response is: "+ response.substring(0,500));
                         listener.onMovieResponse(MovieJsonParser.ParseMovies(response));
                     }
                 }, new Response.ErrorListener() {

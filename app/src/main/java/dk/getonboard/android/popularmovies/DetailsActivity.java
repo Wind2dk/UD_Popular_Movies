@@ -150,18 +150,20 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContent
 
     @Override
     public void onReviewResponse(List<Review> reviews) {
-        final Review review = reviews.get(0);
-        String reviewText = getResources().getString(R.string.read_review) + review.getContent().substring(0,50);
-        SpannableString ss1=  new SpannableString(reviewText);
-        ss1.setSpan(new RelativeSizeSpan(2f), 0,16, 0); // set size
-        ss1.setSpan(new ForegroundColorSpan(Color.RED), 0, 16, 0);// set color
-        reviewBtn.setText(ss1);
-        reviewBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(review.getUrl()));
-                context.startActivity(webIntent);
-            }
-        });
+        if (!reviews.isEmpty()) {
+            final Review review = reviews.get(0);
+            String reviewText = getResources().getString(R.string.read_review) + review.getContent().substring(0, Math.min(50, review.getContent().length()));
+            SpannableString ss1 = new SpannableString(reviewText);
+            ss1.setSpan(new RelativeSizeSpan(2f), 0, 16, 0); // set size
+            ss1.setSpan(new ForegroundColorSpan(Color.RED), 0, 16, 0);// set color
+            reviewBtn.setText(ss1);
+            reviewBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(review.getUrl()));
+                    context.startActivity(webIntent);
+                }
+            });
+        }
     }
 }
