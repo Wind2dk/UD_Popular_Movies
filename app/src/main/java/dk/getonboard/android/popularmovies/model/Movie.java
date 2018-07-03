@@ -1,5 +1,9 @@
 package dk.getonboard.android.popularmovies.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,20 +11,30 @@ import android.os.Parcelable;
  * Created by Wind2dk on 01-03-2018.
  */
 
+@Entity(tableName = "movie")
 public class Movie implements Parcelable {
-    private int voteCount;
+    @PrimaryKey
     private int id;
+    @ColumnInfo(name = "vote_count")
+    private int voteCount;
+    @ColumnInfo(name = "vote_average")
     private double voteAverage;
     private String title;
+    @ColumnInfo(name = "poster_path")
     private String posterPath;
+    @ColumnInfo(name = "genre_ids")
     private int[] genreIds;
     private String overview;
+    @ColumnInfo(name = "release_date")
     private String releaseDate;
+    private boolean favorite;
 
+    @Ignore
     public Movie() {
+        this.favorite = false;
     }
 
-    public Movie(int voteCount, int id, double voteAverage, String title, String posterPath, int[] genreIds, String overview, String releaseDate) {
+    public Movie(int voteCount, int id, double voteAverage, String title, String posterPath, int[] genreIds, String overview, String releaseDate, boolean favorite) {
         this.voteCount = voteCount;
         this.id = id;
         this.voteAverage = voteAverage;
@@ -29,6 +43,7 @@ public class Movie implements Parcelable {
         this.genreIds = genreIds;
         this.overview = overview;
         this.releaseDate = releaseDate;
+        this.favorite = favorite;
     }
 
     protected Movie(Parcel in) {
@@ -40,6 +55,7 @@ public class Movie implements Parcelable {
         genreIds = in.createIntArray();
         overview = in.readString();
         releaseDate = in.readString();
+        favorite = in.readByte() != 0;
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -118,6 +134,12 @@ public class Movie implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
+    public boolean getFavorite() { return favorite; }
+
+    public void setFavorite(boolean favorite) { this.favorite = favorite; }
+
+    public void toggleFavorite() { this.favorite = !this.favorite; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -133,5 +155,6 @@ public class Movie implements Parcelable {
         dest.writeIntArray(genreIds);
         dest.writeString(overview);
         dest.writeString(releaseDate);
+        dest.writeByte((byte) (favorite ? 1 : 0));
     }
 }

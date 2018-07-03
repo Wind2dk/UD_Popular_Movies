@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,9 +21,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dk.getonboard.android.popularmovies.database.AppDatabase;
 import dk.getonboard.android.popularmovies.model.Movie;
 import dk.getonboard.android.popularmovies.model.Review;
 import dk.getonboard.android.popularmovies.model.Trailer;
+import dk.getonboard.android.popularmovies.utility.AppExecutors;
 import dk.getonboard.android.popularmovies.utility.DetailsContentApi;
 import dk.getonboard.android.popularmovies.utility.DetailsContentListener;
 import dk.getonboard.android.popularmovies.utility.TheMovieDbApi;
@@ -37,7 +38,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContent
     @BindView(R.id.details_tv_overview) TextView overview;
     @BindView(R.id.details_tv_userRating) TextView userRating;
     @BindView(R.id.details_tv_releaseDate) TextView releaseDate;
-    @BindView(R.id.details_btn_favorite) Button markFavorite;
+    @BindView(R.id.details_btn_favorite) Button toggleFavoriteBtn;
     @BindView(R.id.details_btn_trailer) Button trailerBtn;
     @BindView(R.id.details_btn_review) Button reviewBtn;
     //endregion
@@ -45,6 +46,8 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContent
     Movie movie;
     DetailsContentApi detailsContentApi;
     Context context;
+    boolean savedInDb = false;
+    private AppDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +55,42 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContent
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
         this.context = this;
+        mDb = AppDatabase.getInstance(getApplicationContext());
         Intent intent = getIntent();
         movie = intent.getParcelableExtra("movie");
+        loadFromDb();
         detailsContentApi = new DetailsContentApi(this, this);
         updateViews();
         detailsContentApi.getTrailers(movie.getId());
         detailsContentApi.getReviews(movie.getId());
+        toggleFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleFavorite();
+            }
+        });
+    }
+
+    private void loadFromDb() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Movie dbMovie = mDb.movieDao().loadMovie(movie.getId());
+                if (dbMovie != null) {
+                    movie.setFavorite(dbMovie.getFavorite());
+                    savedInDb = true;
+                    setFavoriteButton(dbMovie.getFavorite());
+                }
+            }
+        });
+    }
+
+    private void setFavoriteButton(boolean favorite) {
+        if (favorite) {
+            toggleFavoriteBtn.setBackgroundColor(Color.RED);
+        } else {
+            toggleFavoriteBtn.setBackgroundColor(Color.TRANSPARENT);
+        }
     }
 
     private void updateViews() {
@@ -71,6 +104,22 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContent
             userRating.setText(String.valueOf(movie.getVoteAverage()));
             releaseDate.setText(movie.getReleaseDate());
         }
+    }
+
+    private void toggleFavorite() {
+        movie.toggleFavorite();
+        setFavoriteButton(movie.getFavorite());
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (!savedInDb) {
+                    mDb.movieDao().insertMovie(movie);
+                    savedInDb = true;
+                }
+                else
+                    mDb.movieDao().updateMovie(movie);
+            }
+        });
     }
 
     @Override
