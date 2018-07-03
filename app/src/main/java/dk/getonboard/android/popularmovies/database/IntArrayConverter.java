@@ -4,7 +4,6 @@ import android.arch.persistence.room.TypeConverter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public class IntArrayConverter {
 

@@ -10,9 +10,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import dk.getonboard.android.popularmovies.BuildConfig;
-import dk.getonboard.android.popularmovies.R;
-
 import static dk.getonboard.android.popularmovies.BuildConfig.API_KEY;
 import static dk.getonboard.android.popularmovies.utility.TheMovieDbApiKeys.API_BASE_URL;
 import static dk.getonboard.android.popularmovies.utility.TheMovieDbApiKeys.API_POSTER_BASE_URL;
