@@ -6,4 +6,6 @@
     <string name="popular">Popular</string>
     <string name="top_rated">Top rated</string>
     <string name="favorite">Mark as favorite</string>
+    <string name="play_trailer">Play trailer\n</string>
+    <string name="read_review">Read full review\n</string>
 </resources>

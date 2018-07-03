@@ -125,7 +125,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContent
     @Override
     public void onTrailerResponse(List<Trailer> trailers) {
         final Trailer trailer = trailers.get(0);
-        String trailerText = "Play trailer\n" + trailer.getName();
+        String trailerText = getResources().getString(R.string.play_trailer) + trailer.getName();
         SpannableString ss1=  new SpannableString(trailerText);
         // https://stackoverflow.com/questions/16335178/different-font-size-of-strings-in-the-same-textview
         ss1.setSpan(new RelativeSizeSpan(2f), 0,12, 0); // set size
@@ -151,7 +151,7 @@ public class DetailsActivity extends AppCompatActivity implements DetailsContent
     @Override
     public void onReviewResponse(List<Review> reviews) {
         final Review review = reviews.get(0);
-        String reviewText = "Read full review\n" + review.getContent().substring(0,50);
+        String reviewText = getResources().getString(R.string.read_review) + review.getContent().substring(0,50);
         SpannableString ss1=  new SpannableString(reviewText);
         ss1.setSpan(new RelativeSizeSpan(2f), 0,16, 0); // set size
         ss1.setSpan(new ForegroundColorSpan(Color.RED), 0, 16, 0);// set color
